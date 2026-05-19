@@ -1,0 +1,83 @@
+-- MIMO Tickets
+-- sv_core.lua (NOT COMPLETE)
+
+MimoTickets = MimoTickets or {}
+MimoTickets.Tickets = {}
+MimoTickets._nextID = 1
+
+-- nw strings
+
+util.AddNetworkString( "MimoTickets_OpenMenu"    )
+util.AddNetworkString( "MimoTickets_SubmitTicket" )
+util.AddNetworkString( "MimoTickets_Notify"       )
+
+-- need to put claim, close, bring, goto nd ticket list
+
+-- helpers
+
+local function log( msg )
+    print( "[MIMO Tickets] " .. msg )
+end
+
+local function isAdmin( ply )
+  return ply:IsSuperAdmin() -- need to add CAMI support
+end
+
+-- Ticket API
+
+function MimoTickets.OpenTicket( reporter, target, reason, info )
+    local id = MimoTickets._nextID
+    MimoTickets._nextID = id + 1
+  
+    local targetName = IsValid( target ) and target:Nick() or "N/A"
+    local targetSteamID = IsValid( target ) and target:SteamID() or "N/A"
+
+    MimoTickets.Tickets[id] = {
+        id = id,
+        steamid = reporter:SteamID(),
+        reporterName = reporter:Nick(),
+        targetName = targetName,
+        targetSteamID = targetSteamID,
+        reason = reason,
+        info = info:sub( 1, MimoTickets.Config.MaxInfoLength or 100 ),
+        status = "open",
+        openTime = os.time(),
+    }
+
+    log( "Ticket #" .. id .. " opened by " .. reporter:Nick() )
+
+    -- need to notify admins, schedule auto-close
+
+    return id
+end
+
+-- net receivers
+
+net.Receive( "MimoTickets_SubmitTicket", function( len, ply )
+    local targetName = net.ReadString()
+    local reason = net.ReadString()
+    local info = net.ReadString()
+
+    -- get target name to a player object so it can grab their SteamID
+    local target = nil
+    if targetName ~= "N/A" then
+        for _, p in ipairs( player.GetAll() ) do
+            if p:Nick() == targetName then
+                target = p
+                break
+            end
+        end
+    end
+
+    MimoTickets.OpenTicket( ply, target, reason, info )
+end )
+
+-- chat trigger
+
+hook.Add( "PlayerSay", "MimoTickets_ChatTrigger", function( ply, text )
+    if text:sub( 1, 1 ) == MimoTickets.Config.ChatTrigger then
+        net.Start( "MimoTickets_OpenMenu" )
+        net.Send( ply )
+        return ""
+    end
+end )
