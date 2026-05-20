@@ -1,17 +1,19 @@
 -- mTickets loader
 
-AddCSLuaFile( "mTickets/config.lua" )
-AddCSLuaFile( "mTickets/cl_init.lua" )
-AddCSLuaFile( "mTickets/cl_ui.lua" )
+AddCSLuaFile("config.lua")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("cl_ui.lua")
 
-include( "mTickets/config.lua" )
+include("config.lua")
 
 if SERVER then
-    include( "mTickets/sv_core.lua" )
-    include( "mTickets/sv_autoclose.lua" )
+    include("sv_core.lua")
+    include("sv_autoclose.lua")
+    include("sv_commands.lua")
+
 end
 
 if CLIENT then
-    include( "mTickets/cl_init.lua" )
-    include( "mTickets/cl_ui.lua" )
+    include("cl_init.lua")
+    include("cl_ui.lua")
 end
