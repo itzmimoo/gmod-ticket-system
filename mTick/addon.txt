@@ -1,0 +1,7 @@
+{
+    "name": "mTickets",
+    "version": "0.1",
+    "author": "ItzMimoo",
+    "description": "light and simple ticket system for DarkRP",
+    "up_vector": "0 0 1"
+}
