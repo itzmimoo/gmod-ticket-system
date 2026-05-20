@@ -1,11 +1,11 @@
--- MIMO's TICKET SYSTEM :))
+-- mTICKET SYSTEM :))
 -- this is a project i've made by myself, trying to improve my lua skills and more!
 
-MimoTickets = MimoTickets or {}
-MimoTickets.Config = {
+mTickets = mTickets or {}
+mTickets.Config = {
 
     -- TTL (yes i know this isnt an IP packet)
-    AutoCloseTime = 1200, 
+    AutoCloseTime = 1200,
 
     -- keybind for report
     OpenKey = KEY_F11,
@@ -20,5 +20,11 @@ MimoTickets.Config = {
         "Harassment",
         "Other",
     },
+
+    -- max characters allowed in the extra info field
+    MaxInfoLength = 100,
+
+    -- folder used for txt ticket storage (inside garrysmod/data/)
+    DataPath = "mTickets/",
 
 }
